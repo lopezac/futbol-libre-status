@@ -9,7 +9,7 @@ libxml_use_internal_errors(true);
 
 class Connection
 {
-    private const UNWANTED_KEYWORDS = ["login", "twitter", "depor", "youtube", "apk", "mercadolibre", "canchaenmancha", "diariojornada", "memo", "tycsports", "comercioyjusticia", "elobservador", "tiempoar", "https://futbollibreenvivo.org"];
+    private const UNWANTED_KEYWORDS = ["login", "twitter", "depor", "youtube", "apk", "mercadolibre", "canchaenmancha", "diariojornada", "memo", "tycsports", "comercioyjusticia", "elobservador", "tiempoar", "https://futbollibreenvivo.org", "lavoz.com.ar", "perfil.com", "google.com", "diez.hn", "pagina12.com.ar", "diarouno.com.ar", "tiktok.com", "lmneuquen.com", "elciudadanoweb.com", "redgol.cl", "facebook", "diariouno", "diariovanguardia", "universidadeshoy", "cronista", "radio3cadena", "correodelsur", "lostiempos", "infobae"];
     private const WANTED_KEYWORDS = ["futbol", "pelota", "libre", "todos", "roja", "pirlo", "directa"];
     private Client $client;
 
@@ -20,7 +20,7 @@ class Connection
         );
     }
 
-    public function get_pages(string $phrase, int $amount_pages = 5): array
+    public function get_pages(string $phrase, int $amount_pages = 10): array
     {
         $total_pages = [];
 
@@ -40,7 +40,7 @@ class Connection
 
         $url = "https://search.goo.ne.jp/web.jsp?MT=" .
              $phrase .
-            "&mode=0&sbd=goo001&IE=utf-8&OE=utf-8&nominify=2&FR=" .
+            "&mode=0&sbd=goo001&IE=utf-8&OE=utf-8&nominify=1&FR=" .
             $page - 1 .
             "0&DC=10&from=pager_web";
 
