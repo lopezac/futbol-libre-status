@@ -1,11 +1,27 @@
 import React from "react";
-import ReactDom from "react-dom/client";
+import { createRoot } from "react-dom/client";
+import {
+    createBrowserRouter,
+    RouterProvider,
+} from "react-router-dom";
 
-import Home from "./pages/Home";
+import HomePage from "./pages/Home";
+import ReloadPage from "./pages/Reload";
 
-const root = ReactDom.createRoot(document.getElementById("root"));
+const root = createRoot(document.getElementById("root"));
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <HomePage />
+    },
+    {
+        path: "reload",
+        element: <ReloadPage />
+    }
+]);
+
 root.render(
     <React.StrictMode>
-        <Home />
+        <RouterProvider router={router} />
     </React.StrictMode>
 );

@@ -3,7 +3,7 @@ import Footer from "../components/Footer";
 import {AlertIcon, SuccessIcon} from "../components/Icons";
 import "../styles.css";
 
-function Home() {
+function HomePage() {
     const pages = [
         {"status": 0, "url": "https://www.pelotalibre.com"},
         {"status": 1, "url": "https://www.futbollibre.com"},
@@ -57,4 +57,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default HomePage;
