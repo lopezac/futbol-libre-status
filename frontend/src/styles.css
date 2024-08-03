@@ -1,0 +1,14 @@
+.main-div {
+    height: 100vh;
+}
+
+.main-container {
+    @media (max-width: 992px) {
+        padding-right: 3rem;
+        padding-left: 3rem;
+    }
+
+    @media (min-width: 992px) {
+        width: 912px !important;
+    }
+}
