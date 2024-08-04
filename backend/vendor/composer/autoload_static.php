@@ -17,6 +17,7 @@ class ComposerStaticInitd751713988987e9331980363e24189ce
         array (
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
+            'PhpKit\\ExtPDO\\' => 14,
         ),
         'G' => 
         array (
@@ -36,6 +37,10 @@ class ComposerStaticInitd751713988987e9331980363e24189ce
         array (
             0 => __DIR__ . '/..' . '/psr/http-client/src',
         ),
+        'PhpKit\\ExtPDO\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-kit/ext-pdo/src',
+        ),
         'GuzzleHttp\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
@@ -51,9 +56,11 @@ class ComposerStaticInitd751713988987e9331980363e24189ce
     );
 
     public static $classMap = array (
+        'BaseController' => __DIR__ . '/../..' . '/controllers/BaseController.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'Connection' => __DIR__ . '/../..' . '/classes/Connection.php',
-        'Database' => __DIR__ . '/../..' . '/classes/Database.php',
+        'DatabaseModel' => __DIR__ . '/../..' . '/models/DatabaseModel.php',
+        'PageController' => __DIR__ . '/../..' . '/controllers/PageController.php',
+        'PageModel' => __DIR__ . '/../..' . '/models/PageModel.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

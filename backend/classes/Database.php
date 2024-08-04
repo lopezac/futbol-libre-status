@@ -3,11 +3,6 @@
 
 class Database
 {
-    private const HOST = "localhost";
-    private const DBNAME = "futbollibre";
-    private const USER = "lopezaxel";
-    private const PASSWORD = "globito";
-    private const CONNECTION_URL = "mysql:host=" . self::HOST . ";dbname=" . self::DBNAME;
     const SELECTSINGLE = 1;
     const SELECTALL = 2;
     const EXECUTE = 3;
@@ -18,7 +13,8 @@ class Database
 
     public function __construct()
     {
-        $this->pdo = new PDO(self::CONNECTION_URL, self::USER, self::PASSWORD);
+        $this->pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USERNAME,
+            DB_PASSWORD);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 

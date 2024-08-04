@@ -1,6 +1,0 @@
-### GET request to example server
-https://search.goo.ne.jp/web.jsp?MT=futbol%20libre&mode=0&sbd=goo001&IE=UTF-8&OE=UTF-8&from=s_b_top_web&PT=&nominify=1
-https://search.goo.ne.jp/web.jsp?MT=futbol+libre&mode=0&sbd=goo001&IE=utf-8&OE=utf-8&nominify=2&FR=10&DC=10&from=pager_web
-https://search.goo.ne.jp/web.jsp?MT=futbol+libre&mode=0&sbd=goo001&IE=utf-8&OE=utf-8&nominify=2&DC=10&FR=20&from=pager_web
-https://search.goo.ne.jp/web.jsp?MT=futbol+libre&mode=0&sbd=goo001&IE=utf-8&OE=utf-8&nominify=2&DC=10&FR=30&from=pager_web
-###

@@ -6,7 +6,9 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'BaseController' => $baseDir . '/controllers/BaseController.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
-    'Connection' => $baseDir . '/classes/Connection.php',
-    'Database' => $baseDir . '/classes/Database.php',
+    'DatabaseModel' => $baseDir . '/models/DatabaseModel.php',
+    'PageController' => $baseDir . '/controllers/PageController.php',
+    'PageModel' => $baseDir . '/models/PageModel.php',
 );
