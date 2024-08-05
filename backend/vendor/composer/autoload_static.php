@@ -59,6 +59,7 @@ class ComposerStaticInitd751713988987e9331980363e24189ce
         'BaseController' => __DIR__ . '/../..' . '/controllers/BaseController.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'DatabaseModel' => __DIR__ . '/../..' . '/models/DatabaseModel.php',
+        'Helper' => __DIR__ . '/../..' . '/includes/Helper.php',
         'PageController' => __DIR__ . '/../..' . '/controllers/PageController.php',
         'PageModel' => __DIR__ . '/../..' . '/models/PageModel.php',
     );

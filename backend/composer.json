@@ -1,12 +1,11 @@
 {
   "require": {
     "guzzlehttp/guzzle": "^7.9",
-    "php-kit/ext-pdo": "^1.1",
-    "ext-pdo": "*"
+    "php-kit/ext-pdo": "^1.1"
   },
   "autoload": {
     "classmap": [
-      "controllers", "models"
+      "controllers", "models", "includes"
     ]
   }
 }

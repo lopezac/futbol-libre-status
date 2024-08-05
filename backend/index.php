@@ -2,27 +2,20 @@
 
 require 'vendor/autoload.php';
 require "includes/config.php";
-require "includes/helper.php";
+require "includes/Helper.php";
 
-$url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$url = explode("/", $url);
-$fileIdx = getFileIndex($url);
-$model = $url[$fileIdx + 1] ?? "";
-// TODO: tendria que ser una constante??
-$validModels = ["pages"];
-// TODO: retornar un mensaje tambien cuando no es un modelo valido
-if (!isset($model) || !in_array($model, $validModels)) {
-    header("HTTP/1.1 404 Not Found");
-    exit();
-}
+$helper = new Helper();
+$full_url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$url = $helper->getUrlSubString($full_url);
+$req_method = $_SERVER["REQUEST_METHOD"];
+$pageController = new PageController();
 
-if ($model === "pages") {
-    $pageController = new PageController();
-    $action = $url[$fileIdx + 2] ?? "";
-
-    if ($action === "") {
-        $pageController->getPosts();
-    } else if ($action === "update") {
-        $pageController->updatePosts();
-    }
+if ($url === "/pages" && $req_method === "GET") {
+    $pageController->getPosts();
+} else if ($url === "/pages/update" && $req_method === "POST") {
+    $pageController->updatePosts();
+} else {
+    $resBody = ["error" => "The request url was not found on our server"];
+    $resHeader = ["HTTP/1.1 404 Not Found"];
+    $pageController->sendResponse(json_encode($resBody), $resHeader);
 }

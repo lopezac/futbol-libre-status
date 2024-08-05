@@ -9,6 +9,7 @@ return array(
     'BaseController' => $baseDir . '/controllers/BaseController.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'DatabaseModel' => $baseDir . '/models/DatabaseModel.php',
+    'Helper' => $baseDir . '/includes/Helper.php',
     'PageController' => $baseDir . '/controllers/PageController.php',
     'PageModel' => $baseDir . '/models/PageModel.php',
 );
