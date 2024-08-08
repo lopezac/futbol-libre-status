@@ -15,7 +15,6 @@ class DatabaseModel
     {
         $stmt = $this->execute($query, $params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        //TODO: es necesario hacer $stmt->close()???
     }
 
     // $valueToBind is an array [":valueName", value]

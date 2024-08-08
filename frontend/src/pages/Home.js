@@ -1,15 +1,34 @@
+import {useEffect, useState} from "react";
+
+// TODO: hacer url dinamica en vez de ../components
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import {AlertIcon, SuccessIcon} from "../components/Icons";
+import {SuccessIcon} from "../components/Icons";
 import "../styles.css";
 
 function HomePage() {
-    const pages = [
-        {"status": 0, "url": "https://www.pelotalibre.com"},
-        {"status": 1, "url": "https://www.futbollibre.com"},
-        {"status": 1, "url": "https://www.pelotalibre.television.com"},
-        {"status": 0, "url": "https://www.futbollibre.net"},
-    ];
+    const [pages, setPages] = useState([]);
+
+    useEffect(() => {
+        async function fetchData() {
+            // TODO: hacer url variable enviroment
+            const url = "http://localhost:8000/index.php/pages";
+
+            try {
+                const response = await fetch(url, {"method": "GET"});
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data);
+                    setPages(data["pages"]);
+                } else {
+                    console.error(`Request to ${url} returned other than 200.`);
+                }
+            } catch (error) {
+                console.error(`An error ocurred doing request to ${url}`, error);
+            }
+        }
+            fetchData();
+    }, []);
 
     return (
         <div className="d-flex flex-column main-div">
@@ -36,19 +55,21 @@ function HomePage() {
                             </th>
                         </tr>
                         </thead>
-                        <tbody>
-                        {pages.map((page, index) => (
-                            <tr key={index} className="border-top border-secondary-subtle">
-                                <td className="py-1 px-0 fw-medium fs-4 text-center border-end"
-                                    style={{"width": "70px"}}>
-                                    {page["status"] === 1 ? <AlertIcon/> : <SuccessIcon/>}
-                                </td>
-                                <td className="py-1 px-2 fw-medium fs-4 align-middle">
-                                    <a className="flex-grow-1 text-decoration-none" href={page["url"]}>{page["url"]}</a>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
+                        {pages.length ? (
+                            <tbody>
+                            {pages.map((page, index) => (
+                                <tr key={index} className="border-top border-secondary-subtle">
+                                    <td className="py-1 px-0 fw-medium fs-4 text-center border-end"
+                                        style={{"width": "70px"}}>
+                                        <SuccessIcon/>
+                                    </td>
+                                    <td className="py-1 px-2 fw-medium fs-4 align-middle">
+                                        <a className="flex-grow-1 text-decoration-none" href={page["url"]}>{page["url"]}</a>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        ) : ""}
                     </table>
                 </div>
             </main>

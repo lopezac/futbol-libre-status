@@ -3,20 +3,20 @@
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\GuzzleException;
 
-include "./keywords_data.php";
+// TODO: improve this
+include "./models/keywords_data.php";
 
 class PageModel extends DatabaseModel
 {
+    private const int MAX_PAGES_TO_SEARCH = 9;
     private string $search_keywords;
-    private const MAX_PAGES_TO_SEARCH = 1;
     private HttpClient $client;
 
-    // TODO: es necesario esto cuando no se agrega nada al construct¿??
     public function __construct(string $search_keywords = "futbol libre")
     {
         parent::__construct();
         $this->search_keywords = $search_keywords;
-        $this->client = new HttpClient(["timeout" => 1]);
+        $this->client = new HttpClient(["timeout" => 5]);
     }
 
     public function getPages(): array
@@ -42,10 +42,8 @@ class PageModel extends DatabaseModel
     public function insertPages(array $pages): void
     {
         foreach ($pages as $page) {
-            $query = "INSERT INTO pages (url, status) VALUES (:url, :status)";
-            $params = [
-                [":url", $page["url"]], [":status", $page["status"]]
-            ];
+            $query = "INSERT INTO pages (url) VALUES (:url)";
+            $params = [[":url", $page["url"]]];
             $this->execute($query, $params);
         }
     }
@@ -64,7 +62,7 @@ class PageModel extends DatabaseModel
 
     private function getPagesFromBrowserRequest(int $pager): array
     {
-        $url = $this->getSearchUrl($pager, 4);
+        $url = $this->getSearchUrl($pager, 1);
         $pages = [];
 
         try {
@@ -73,13 +71,9 @@ class PageModel extends DatabaseModel
 
             foreach ($valid_urls as $url) {
                 $status = $this->getPageStatus($url);
-// TODO: chequear si contenido de la pagina dice bloqueado o algo, y si tarda mucho la pagina en responder
-                // TODO: sacar status de la base de datos, no sirve de mucho
+
                 if ($status === 1) {
-                    $pages[] = [
-                        "status" => $status,
-                        "url" => $url
-                    ];
+                    $pages[] = ["url" => $url];
                 }
             }
         } catch (GuzzleException $e) {
@@ -103,15 +97,16 @@ class PageModel extends DatabaseModel
                     $pager .
                     "0&DC=10&from=pager_web";
                 break;
+            // TODO: anda mal yahoo.com, creo que las urls tienen fecha de expiracion
             // Yahoo.com search engine
             case 2:
                 $url = "https://search.yahoo.com/search;_ylt=AwrEuUtkQrFmh7glJahXNyoA;_ylu=Y29sbwNiZjEEcG9zAzEEdnRpZAMEc2VjA3BhZ2luYXRpb24-?fr=sfp&fr2=p%3As%2Cv%3Asfp%2Cm%3Asb-top&p=";
-                    str_replace(" ", "+", $this->search_keywords) .
-                    "&b=" .
-                    $pager .
-                    "1&pz=7&bct=0&xargs=0";
+                str_replace(" ", "+", $this->search_keywords) .
+                "&b=" .
+                $pager .
+                "1&pz=7&bct=0&xargs=0";
                 break;
-            // Seznam.cz search engine
+            // Mojeek.com search engine
             case 3:
                 $url = "https://www.mojeek.com/search?q=" .
                     str_replace(" ", "+", $this->search_keywords) .
@@ -119,7 +114,8 @@ class PageModel extends DatabaseModel
                     ($pager + 1) .
                     "1";
                 break;
-            // Mojeek.com search engine
+            // Seznam.cz search engine
+            // TODO: remove seznam.cz no sirve
             case 4:
                 $url = "https://search.seznam.cz/?q=" .
                     str_replace(" ", "%20", $this->search_keywords) .
@@ -137,7 +133,7 @@ class PageModel extends DatabaseModel
         $dom = new DomDocument();
         $urls = [];
 
-        $dom->loadHTML($body);
+        $dom->loadHTML($body, LIBXML_NOERROR);
         // TODO: intentar agregar un xpath o algo para validar sin funcion helper
         foreach ($dom->getElementsByTagName("a") as $anchor) {
             $url = $anchor->getAttribute("href");
@@ -153,13 +149,14 @@ class PageModel extends DatabaseModel
     private function validUrl(string $url): bool
     {
         $helper = new Helper();
-        $hostname = parse_url($url, PHP_URL_HOST);
+        $hostname = parse_url($url, PHP_URL_HOST) ?? "";
 
         return $helper->strContainsKeyword($hostname, WANTED_KEYWORDS) &&
             !$helper->strContainsKeyword($url, UNWANTED_KEYWORDS) &&
             !$helper->strContainsKeyword($url, UNWANTED_URLS);
     }
 
+    // TODO: chequear si contenido de la pagina dice bloqueado, y si tarda mucho la pagina en responder
     public function getPageStatus(string $url): int
     {
         $status = 1;

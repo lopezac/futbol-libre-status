@@ -10,9 +10,10 @@ const WANTED_KEYWORDS = [
 ];
 
 const UNWANTED_KEYWORDS = [
-
+    "tyc",
+    "mutawakkil"
 ];
 
 const UNWANTED_URLS = [
-
+    "https://futbollibreenvivo.org/en"
 ];

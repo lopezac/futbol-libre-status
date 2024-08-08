@@ -8,8 +8,12 @@ RUN apt-get update && \
     apt-get upgrade && \
     apt-get install zip unzip
 
-# TODO: add tidy extension, remove unused extesions
+# Install extensions
 RUN docker-php-ext-install pdo_mysql
+RUN pecl install xdebug
+
+# Enable extensions
+RUN docker-php-ext-enable xdebug
 
 # Install Composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer
