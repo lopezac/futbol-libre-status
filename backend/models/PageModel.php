@@ -7,14 +7,15 @@ include "./keywords_data.php";
 
 class PageModel extends DatabaseModel
 {
-    private const SEARCH_KEYWORDS = "futbol libre";
-    private const MAX_PAGES_TO_SEARCH = 10;
+    private string $search_keywords;
+    private const MAX_PAGES_TO_SEARCH = 1;
     private HttpClient $client;
 
     // TODO: es necesario esto cuando no se agrega nada al construct¿??
-    public function __construct()
+    public function __construct(string $search_keywords = "futbol libre")
     {
         parent::__construct();
+        $this->search_keywords = $search_keywords;
         $this->client = new HttpClient(["timeout" => 1]);
     }
 
@@ -54,8 +55,8 @@ class PageModel extends DatabaseModel
     {
         $pages = [];
 
-        for ($i = 0; $i < self::MAX_PAGES_TO_SEARCH; $i++) {
-            array_merge($pages, $this->getPagesFromBrowserRequest($i));
+        for ($pager = 0; $pager < self::MAX_PAGES_TO_SEARCH; $pager++) {
+            $pages = array_merge($pages, $this->getPagesFromBrowserRequest($pager));
         }
 
         return $pages;
@@ -63,7 +64,7 @@ class PageModel extends DatabaseModel
 
     private function getPagesFromBrowserRequest(int $pager): array
     {
-        $url = $this->getSearchUrl($pager);
+        $url = $this->getSearchUrl($pager, 4);
         $pages = [];
 
         try {
@@ -73,10 +74,13 @@ class PageModel extends DatabaseModel
             foreach ($valid_urls as $url) {
                 $status = $this->getPageStatus($url);
 // TODO: chequear si contenido de la pagina dice bloqueado o algo, y si tarda mucho la pagina en responder
-                $pages[] = [
-                    "status" => $status,
-                    "url" => $url
-                ];
+                // TODO: sacar status de la base de datos, no sirve de mucho
+                if ($status === 1) {
+                    $pages[] = [
+                        "status" => $status,
+                        "url" => $url
+                    ];
+                }
             }
         } catch (GuzzleException $e) {
         } // TODO: esta bien hacer esto de un catch vacio??
@@ -84,24 +88,48 @@ class PageModel extends DatabaseModel
         return $pages;
     }
 
-    private function getSearchUrl(int $pager): string
+    private function getSearchUrl(int $pager, int $option = 1): string
     {
+        $url = "";
+
+        // Soporta actualmente 4 motores de busqueda
+        // Ordenados ascendentemente por eficiencia, siendo el 1 el mas eficiente
         switch ($option) {
+            // Goo.ne.jp search engine
             case 1:
+                $url = "https://search.goo.ne.jp/web.jsp?MT=" .
+                    $this->search_keywords .
+                    "&mode=0&sbd=goo001&IE=utf-8&OE=utf-8&nominify=1&FR=" .
+                    $pager .
+                    "0&DC=10&from=pager_web";
                 break;
+            // Yahoo.com search engine
             case 2:
+                $url = "https://search.yahoo.com/search;_ylt=AwrEuUtkQrFmh7glJahXNyoA;_ylu=Y29sbwNiZjEEcG9zAzEEdnRpZAMEc2VjA3BhZ2luYXRpb24-?fr=sfp&fr2=p%3As%2Cv%3Asfp%2Cm%3Asb-top&p=";
+                    str_replace(" ", "+", $this->search_keywords) .
+                    "&b=" .
+                    $pager .
+                    "1&pz=7&bct=0&xargs=0";
                 break;
+            // Seznam.cz search engine
             case 3:
+                $url = "https://www.mojeek.com/search?q=" .
+                    str_replace(" ", "+", $this->search_keywords) .
+                    "&s=" .
+                    ($pager + 1) .
+                    "1";
                 break;
+            // Mojeek.com search engine
             case 4:
-                break;
+                $url = "https://search.seznam.cz/?q=" .
+                    str_replace(" ", "%20", $this->search_keywords) .
+                    "&count=10&pId=poVw0cpAPenB35eAcSZl&from=" .
+                    $pager .
+                    "0";
+            default:
         }
-        // TODO: convertir SEARCH_KEYWORDS en un parametro, asi modularizable
-        return "https://search.goo.ne.jp/web.jsp?MT=" .
-            self::SEARCH_KEYWORDS .
-            "&mode=0&sbd=goo001&IE=utf-8&OE=utf-8&nominify=1&FR=" .
-            $pager .
-            "0&DC=10&from=pager_web";
+
+        return $url;
     }
 
     private function getValidUrls(string $body): array
@@ -114,12 +142,12 @@ class PageModel extends DatabaseModel
         foreach ($dom->getElementsByTagName("a") as $anchor) {
             $url = $anchor->getAttribute("href");
 
-            if ($this->validUrl($url)) {
+            if ($this->validUrl($url) && !in_array($url, $urls, true)) {
                 $urls[] = $url;
             }
         }
 
-        return array_unique($urls);
+        return $urls;
     }
 
     private function validUrl(string $url): bool

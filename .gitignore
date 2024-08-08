@@ -5,3 +5,4 @@ frontend/public/example
 backend/test.http
 backend/vendor/
 test_docker/
+test.http
