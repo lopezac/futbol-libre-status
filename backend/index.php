@@ -1,8 +1,7 @@
 <?php
 
-require 'vendor/autoload.php';
+require "vendor/autoload.php";
 require "includes/config.php";
-require "includes/Helper.php";
 
 $helper = new Helper();
 $full_url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);

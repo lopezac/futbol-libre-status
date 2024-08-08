@@ -3,9 +3,10 @@
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\GuzzleException;
 
+include "./keywords_data.php";
+
 class PageModel extends DatabaseModel
 {
-    private const WANTED_KEYWORDS = ["futbol", "pelota", "libre", "todos", "roja", "pirlo", "directa"];
     private const SEARCH_KEYWORDS = "futbol libre";
     private const MAX_PAGES_TO_SEARCH = 10;
     private HttpClient $client;
@@ -85,6 +86,16 @@ class PageModel extends DatabaseModel
 
     private function getSearchUrl(int $pager): string
     {
+        switch ($option) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+        }
         // TODO: convertir SEARCH_KEYWORDS en un parametro, asi modularizable
         return "https://search.goo.ne.jp/web.jsp?MT=" .
             self::SEARCH_KEYWORDS .
@@ -95,8 +106,6 @@ class PageModel extends DatabaseModel
 
     private function getValidUrls(string $body): array
     {
-        // TODO: agregarle php-tidy
-        $helper = new Helper();
         $dom = new DomDocument();
         $urls = [];
 
@@ -104,14 +113,23 @@ class PageModel extends DatabaseModel
         // TODO: intentar agregar un xpath o algo para validar sin funcion helper
         foreach ($dom->getElementsByTagName("a") as $anchor) {
             $url = $anchor->getAttribute("href");
-            $hostname = parse_url($url, PHP_URL_HOST);
 
-            if ($helper->strContainsKeyword($hostname, self::WANTED_KEYWORDS)) {
+            if ($this->validUrl($url)) {
                 $urls[] = $url;
             }
         }
 
         return array_unique($urls);
+    }
+
+    private function validUrl(string $url): bool
+    {
+        $helper = new Helper();
+        $hostname = parse_url($url, PHP_URL_HOST);
+
+        return $helper->strContainsKeyword($hostname, WANTED_KEYWORDS) &&
+            !$helper->strContainsKeyword($url, UNWANTED_KEYWORDS) &&
+            !$helper->strContainsKeyword($url, UNWANTED_URLS);
     }
 
     public function getPageStatus(string $url): int

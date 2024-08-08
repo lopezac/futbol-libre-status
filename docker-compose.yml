@@ -1,0 +1,23 @@
+services:
+  php:
+    container_name: php-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/var/www/html
+    ports:
+      - 8000:80
+    depends_on:
+      - mysql-db
+
+  mysql-db:
+    container_name: mysql-db
+    image: mysql:9.0
+    environment:
+      MYSQL_ROOT_PASSWORD: globo
+      MYSQL_DATABASE: futbollibre
+      MYSQL_USER: axelcarlos
+      MYSQL_PASSWORD: globito
+    ports:
+      - "3306:3306"
