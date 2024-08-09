@@ -1,7 +1,10 @@
+# Folders
 .idea/
 **/node_modules/
 **/vendor/
 **/secrets/
 
+# Files
 **/*.http
 ./secrets/*.txt
+**/*.env

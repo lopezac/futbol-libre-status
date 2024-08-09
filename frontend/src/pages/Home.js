@@ -8,18 +8,21 @@ import "../styles.css";
 
 function HomePage() {
     const [pages, setPages] = useState([]);
+    const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
         async function fetchData() {
-            const url = `${process.env.REACT_APP_BACKEND_URL}/pages`;
+            const url = `${BACKEND_URL}/pages`;
             console.log(`Url = ${url}`);
 
             try {
                 const response = await fetch(url, {"method": "GET"});
-                const data = await response.json();
-                console.log(`Request to ${url} GET returned ${response.status}.`, data);
-                if (response.ok) {
+                console.log(`Request to ${url} GET returned ${response.status}.`);
+
+                if (response.ok && response.headers.get("Content-type") === "application/json") {
+                    const data = await response.json();
                     setPages(data["pages"]);
+                    console.log(`Request to ${url} GET returned ${response.status}.`, data);
                 }
             } catch (error) {
                 console.error(`An error ocurred doing request to ${url}`, error);

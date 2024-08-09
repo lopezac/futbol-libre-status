@@ -1,7 +1,6 @@
 <?php
 
 require "vendor/autoload.php";
-require "includes/config.php";
 
 $helper = new Helper();
 $full_url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -9,14 +8,12 @@ $url = $helper->getUrlSubString($full_url);
 $req_method = $_SERVER["REQUEST_METHOD"];
 $pageController = new PageController();
 
-// TODO: Mejorar esto del handleo de CORS
-// Permitir CORS, permitir a la url local localhost:3000
-header("Access-Control-Allow-Origin: http://localhost:3000");
+// Permitir CORS, de la URL de frontend de desarrollo y produccion respectivamente
+header("Access-Control-Allow-Origin: " . $_ENV["FRONTEND_URL"]);
 
 if ($url === "/pages" && $req_method === "GET") {
-    $pageController->getPosts();
+    $pageController->getPages();
 } else if ($url === "/pages/update" && $req_method === "POST") {
-    // TODO: aceptar query parametro de keywords= y pasarlo aca a updatePosts
     $pageController->updatePosts();
 } else {
     $resBody = ["error" => "The request url was not found on our server"];

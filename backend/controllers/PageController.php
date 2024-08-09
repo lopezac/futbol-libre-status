@@ -2,16 +2,20 @@
 
 class PageController extends BaseController
 {
-    public function getPosts(): void
+    private PageModel $pageModel;
+
+    public function __construct() {
+        $this->pageModel = new PageModel($_GET["keywords"] ?? "futbol libre");
+    }
+
+    public function getPages(): void
     {
-        // TODO: quiza hacer que postModel sea una propiedad privada en vez de instanciarlo en cada metodo
         // TODO: agregar limit, tambien paginador incluso?
         $resBody = [];
         $resHeaders = [];
 
         try {
-            $postModel = new PageModel();
-            $pages = $postModel->getPages();
+            $pages = $this->pageModel->getPages();
 
             $resBody["pages"] = $pages;
             $resHeaders[] = "Content-type: application/json";
@@ -30,14 +34,13 @@ class PageController extends BaseController
         $resHeaders = [];
 
         try {
-            $pageModel = new PageModel();
-            $newPages = $pageModel->getNewPages();
+            $newPages = $this->pageModel->getNewPages();
 
             if (count($newPages) > 0) {
-                $res = $pageModel->deletePages();
+                $res = $this->pageModel->deletePages();
 
                 if ($res === true) {
-                    $pageModel->insertPages($newPages);
+                    $this->pageModel->insertPages($newPages);
 
                     $resBody["message"] = "Pages updated successfully!";
                     $resHeaders[] = "HTTP/1.1 200 OK";

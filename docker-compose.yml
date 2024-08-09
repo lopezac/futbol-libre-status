@@ -12,6 +12,8 @@ services:
       - "8000:80"
     environment:
       - PHP_IDE_CONFIG=serverName=chequear-server
+    # TODO: es necesario en ./backend/.production.env añadir PHP_IDE_CONFIG??
+    env_file: "./backend/.development.env"
     depends_on:
       - mysql-db
 
@@ -42,7 +44,7 @@ services:
       - ./frontend:/frontend
     ports:
       - "3000:3000"
-    env_file: ".env"
+    env_file: "./frontend/.development.env"
     depends_on:
       - php
 
