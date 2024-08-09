@@ -3,16 +3,17 @@ import Footer from "../components/Footer";
 
 function ReloadPage() {
     async function handleSubmit(event) {
-        const url = "http://localhost:8000/index.php/pages";
         event.preventDefault();
+
+        const url = `${process.env.REACT_APP_BACKEND_URL}/pages/update`;
         try {
-            const response = await fetch(`${url}/update`, {"method": "POST"});
+            const response = await fetch(url, {"method": "POST"});
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
+                console.log(`Response from ${url}/update POST`, data);
             }
         } catch (error) {
-            console.error(`Error during request to ${url}.`, error);
+            console.error(`An error ocurred doing request to ${url}`, error);
         }
     }
 

@@ -11,23 +11,22 @@ function HomePage() {
 
     useEffect(() => {
         async function fetchData() {
-            // TODO: hacer url variable enviroment
-            const url = "http://localhost:8000/index.php/pages";
+            const url = `${process.env.REACT_APP_BACKEND_URL}/pages`;
+            console.log(`Url = ${url}`);
 
             try {
                 const response = await fetch(url, {"method": "GET"});
+                const data = await response.json();
+                console.log(`Request to ${url} GET returned ${response.status}.`, data);
                 if (response.ok) {
-                    const data = await response.json();
-                    console.log(data);
                     setPages(data["pages"]);
-                } else {
-                    console.error(`Request to ${url} returned other than 200.`);
                 }
             } catch (error) {
                 console.error(`An error ocurred doing request to ${url}`, error);
             }
         }
-            fetchData();
+
+        fetchData();
     }, []);
 
     return (
@@ -64,7 +63,8 @@ function HomePage() {
                                         <SuccessIcon/>
                                     </td>
                                     <td className="py-1 px-2 fw-medium fs-4 align-middle">
-                                        <a className="flex-grow-1 text-decoration-none" href={page["url"]}>{page["url"]}</a>
+                                        <a className="flex-grow-1 text-decoration-none"
+                                           href={page["url"]}>{page["url"]}</a>
                                     </td>
                                 </tr>
                             ))}

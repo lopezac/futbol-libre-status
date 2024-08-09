@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 function Header() {
     return (
@@ -7,9 +7,11 @@ function Header() {
                 <li className="list-inline-item">
                     <Link to="/" className="text-decoration-none text-reset">Futbol Libre Status</Link>
                 </li>
-                <li className="list-inline-item float-end">
-                    <Link to="/reload" className="text-decoration-none text-reset">Reload</Link>
-                </li>
+                {process.env.NODE_ENV === "development" &&
+                    <li className="list-inline-item float-end">
+                        <Link to="/reload" className="text-decoration-none text-reset">Reload</Link>
+                    </li>
+                }
             </ul>
         </nav>
     );

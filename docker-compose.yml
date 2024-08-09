@@ -1,17 +1,17 @@
 services:
   php:
-    environment:
-      - PHP_IDE_CONFIG=serverName=chequear-server
     container_name: php-server
     build:
       context: .
-      dockerfile: ./backend/Dockerfile
+      dockerfile: ./backend/docker/Dockerfile
     volumes:
       - ./backend:/var/www/html
       - ./backend/docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
       - ./backend/docker/php/conf.d/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
     ports:
-      - 8000:80
+      - "8000:80"
+    environment:
+      - PHP_IDE_CONFIG=serverName=chequear-server
     depends_on:
       - mysql-db
 
@@ -19,26 +19,42 @@ services:
     container_name: mysql-db
     image: mysql:9.0
     environment:
-      MYSQL_ROOT_PASSWORD: globo
-      MYSQL_DATABASE: futbollibre
-      MYSQL_USER: axelcarlos
-      MYSQL_PASSWORD: globito
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_DATABASE_FILE : /run/secrets/db_name
+      MYSQL_USER_FILE : /run/secrets/db_user
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
     ports:
       - "3306:3306"
+    secrets:
+      - db_root_password
+      - db_password
+      - db_user
+      - db_name
     volumes:
-      - mysql_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
 
   frontend:
     container_name: frontend
     build:
       context: .
-      dockerfile: ./frontend/Dockerfile
+      dockerfile: ./frontend/docker/Dockerfile
     volumes:
       - ./frontend:/frontend
     ports:
       - "3000:3000"
+    env_file: ".env"
     depends_on:
       - php
 
+secrets:
+  db_root_password:
+    file: ./secrets/db_root_password.txt
+  db_password:
+    file: ./secrets/db_password.txt
+  db_user:
+    file: ./secrets/db_user.txt
+  db_name:
+    file: ./secrets/db_name.txt
+
 volumes:
-  mysql_data:
+  db_data:

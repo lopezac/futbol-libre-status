@@ -1,7 +1,9 @@
 .idea/
 **/node_modules/
 **/vendor/
-**/secrets/
+**/secrets
+.git
 
 **/*.http
-./secrets/*.txt
+**/*.log
+.gitignore
